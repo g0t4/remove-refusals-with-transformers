@@ -12,7 +12,7 @@ MODEL_ID = "tiiuae/Falcon3-1B-Instruct"
 # MODEL_ID = "google/gemma-1.1-7b-it"
 # MODEL_ID = "meta-llama/Meta-Llama-3-8B-Instruct"
 
-trust_remote_code = True
+trust_remote_code = False
 model = AutoModelForCausalLM.from_pretrained(MODEL_ID,
                                              trust_remote_code=trust_remote_code,
                                              dtype=torch.float16,
