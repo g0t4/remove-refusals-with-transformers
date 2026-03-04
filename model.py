@@ -6,6 +6,7 @@ torch.inference_mode()
 MODEL_ID = "tiiuae/Falcon3-1B-Instruct"
 # MODEL_ID = "Qwen/Qwen3-1.7B"
 # MODEL_ID = "Qwen/Qwen3.5-2B" # PRN fix ablation "hooks" for attention differences
+MODEL_ID = "openai/gpt-oss-20b"
 # MODEL_ID = "stabilityai/stablelm-2-zephyr-1_6b"
 # MODEL_ID = "Qwen/Qwen1.5-1.8B-Chat"
 # MODEL_ID = "Qwen/Qwen-1_8B-chat"
@@ -21,10 +22,10 @@ def load_model() -> tuple[AutoModelForCausalLM, AutoTokenizer]:
         trust_remote_code=TRUST_REMOTE_CODE,
         dtype=torch.float16,
         device_map="cuda:0",
-        quantization_config=BitsAndBytesConfig(
-            load_in_4bit=True,
-            bnb_4bit_compute_dtype=torch.float16,
-        ),
+        # quantization_config=BitsAndBytesConfig(
+        #     load_in_4bit=True,
+        #     bnb_4bit_compute_dtype=torch.float16,
+        # ),
     )
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=TRUST_REMOTE_CODE)
     return model, tokenizer
