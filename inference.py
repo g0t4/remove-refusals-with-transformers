@@ -75,18 +75,15 @@ for idx in reversed(range(len(model.model.layers))):
 if hasattr(model, "config") and hasattr(model.config, "num_hidden_layers"):
     model.config.num_hidden_layers *= 2
 
-conversation = []
+# %%
 
-streamer = TextStreamer(tokenizer)
+prompt = "what is your name"
+conversation = [{"role": "user", "content": prompt}]
+toks = tokenizer.apply_chat_template(conversation=conversation, add_generation_prompt=True, return_tensors="pt")
+toks = toks.to(model.device)
 
-print(f"Chat with {MODEL_ID}:")
-while True:
-    prompt = input()
-    conversation.append({"role": "user", "content": prompt})
-    toks = tokenizer.apply_chat_template(conversation=conversation,
-                                         add_generation_prompt=True, return_tensors="pt")
+gen = model.generate(**toks, max_new_tokens=1337)
 
-    gen = model.generate(toks.to(model.device), streamer=streamer, max_new_tokens=1337)
+decoded = tokenizer.batch_decode(gen[0][len(toks[0]):], skip_special_tokens=True)
 
-    decoded = tokenizer.batch_decode(gen[0][len(toks[0]):], skip_special_tokens=True)
-    conversation.append({"role": "assistant", "content": "".join(decoded)})
+
