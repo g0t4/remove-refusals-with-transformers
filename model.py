@@ -13,14 +13,17 @@ MODEL_ID = "tiiuae/Falcon3-1B-Instruct"
 # MODEL_ID = "meta-llama/Meta-Llama-3-8B-Instruct"
 
 TRUST_REMOTE_CODE = False
-model = AutoModelForCausalLM.from_pretrained(
-    MODEL_ID,
-    trust_remote_code=TRUST_REMOTE_CODE,
-    dtype=torch.float16,
-    device_map="cuda:0",
-    quantization_config=BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_compute_dtype=torch.float16,
-    ),
-)
-tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=TRUST_REMOTE_CODE)
+
+def load_model() -> tuple[AutoModelForCausalLM, AutoTokenizer]:
+    model = AutoModelForCausalLM.from_pretrained(
+        MODEL_ID,
+        trust_remote_code=TRUST_REMOTE_CODE,
+        dtype=torch.float16,
+        device_map="cuda:0",
+        quantization_config=BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_compute_dtype=torch.float16,
+        ),
+    )
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=TRUST_REMOTE_CODE)
+    return model, tokenizer

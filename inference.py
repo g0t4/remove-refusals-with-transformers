@@ -16,7 +16,9 @@ import torch.nn as nn
 from typing import Optional, Tuple
 from transformers import AutoTokenizer, AutoModelForCausalLM, TextStreamer, BitsAndBytesConfig
 from inspect import signature
-from model import model, tokenizer, MODEL_ID
+from model import load_model, MODEL_ID
+
+model, tokenizer = load_model()
 
 # %% 
 
@@ -85,5 +87,6 @@ toks = toks.to(model.device)
 gen = model.generate(**toks, max_new_tokens=1337)
 
 decoded = tokenizer.batch_decode(gen[0][len(toks[0]):], skip_special_tokens=True)
+decoded
 
 

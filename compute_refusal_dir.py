@@ -12,7 +12,9 @@ install(show_locals=False)
 import random
 import torch
 from tqdm import tqdm
-from model import model, tokenizer, MODEL_ID
+from model import load_model, MODEL_ID
+
+model, tokenizer = load_model()
 
 # %% 
 
