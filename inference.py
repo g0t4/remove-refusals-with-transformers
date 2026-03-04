@@ -1,5 +1,6 @@
 # * autoreload changed modules (both `import` and `from` style imports)
 import os
+
 in_nvim_notebook = os.getenv("NVIM")
 if in_nvim_notebook:
     get_ipython().extension_manager.load_extension("autoreload")  # pyright: ignore
@@ -7,6 +8,7 @@ if in_nvim_notebook:
 
 import rich
 from rich.traceback import install
+
 install(show_locals=False)
 
 import einops
@@ -20,54 +22,54 @@ from model import load_model, MODEL_ID
 
 model, tokenizer = load_model()
 
-# %% 
+# %%
 
 refusal_dir = torch.load(MODEL_ID.replace("/", "_") + "_refusal_dir.pt")
 
-
-def direction_ablation_hook(activation: jaxtyping.Float[torch.Tensor, "... d_act"],
-                            direction: jaxtyping.Float[torch.Tensor, "d_act"]):
-    proj = einops.einsum(activation, direction.view(-1, 1),
-                         '... d_act, d_act single -> ... single') * direction
+def direction_ablation_hook(
+    activation: jaxtyping.Float[torch.Tensor, "... d_act"],
+    direction: jaxtyping.Float[torch.Tensor, "d_act"],
+):
+    proj = einops.einsum(activation, direction.view(-1, 1), '... d_act, d_act single -> ... single') * direction
     return activation - proj
-
 
 # Some model developers thought it was stupid to pass a tuple of tuple of tuples around (rightfully so), but unfortunately now we have a divide
 sig = signature(model.model.layers[0].forward)
 simple = sig.return_annotation == torch.Tensor
 
-
 class AblationDecoderLayer(nn.Module):
+
     def __init__(self):
         super().__init__()
         self.attention_type = "full_attention"
 
     def forward(
-            self,
-            hidden_states: torch.Tensor,
-            attention_mask: Optional[torch.Tensor] = None,
-            position_ids: Optional[torch.LongTensor] = None,
-            past_key_value: Optional[Tuple[torch.Tensor]] = None,
-            output_attentions: Optional[bool] = False,
-            use_cache: Optional[bool] = False,
-            cache_position: Optional[torch.LongTensor] = None,
-            **kwargs,
+        self,
+        hidden_states: torch.Tensor,
+        attention_mask: Optional[torch.Tensor] = None,
+        position_ids: Optional[torch.LongTensor] = None,
+        past_key_value: Optional[Tuple[torch.Tensor]] = None,
+        output_attentions: Optional[bool] = False,
+        use_cache: Optional[bool] = False,
+        cache_position: Optional[torch.LongTensor] = None,
+        **kwargs,
     ):
         assert not output_attentions
 
-        ablated = direction_ablation_hook(hidden_states, refusal_dir.to(
-            hidden_states.device)).to(hidden_states.device)
+        ablated = direction_ablation_hook(
+            hidden_states,
+            refusal_dir.to(hidden_states.device),
+        ).to(hidden_states.device)
 
         if simple:
             return ablated
 
-        outputs = (ablated,)
+        outputs = (ablated, )
 
         if use_cache:
-            outputs += (past_key_value,)
+            outputs += (past_key_value, )
 
         return outputs
-
 
 # for qwen 1 this needs to be changed to model.transformer.h
 for idx in reversed(range(len(model.model.layers))):
@@ -88,5 +90,3 @@ gen = model.generate(**toks, max_new_tokens=1337)
 
 decoded = tokenizer.batch_decode(gen[0][len(toks[0]):], skip_special_tokens=True)
 decoded
-
-
