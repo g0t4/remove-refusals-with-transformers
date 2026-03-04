@@ -25,6 +25,7 @@ model, tokenizer = load_model()
 # %%
 
 refusal_dir = torch.load(MODEL_ID.replace("/", "_") + "_refusal_dir.pt")
+refusal_dir = refusal_dir.to(model.device)
 
 def direction_ablation_hook(
     activation: jaxtyping.Float[torch.Tensor, "... d_act"],
@@ -58,7 +59,7 @@ class AblationDecoderLayer(nn.Module):
 
         ablated = direction_ablation_hook(
             hidden_states,
-            refusal_dir.to(hidden_states.device),
+            refusal_dir,
         ).to(hidden_states.device)
 
         if simple:
