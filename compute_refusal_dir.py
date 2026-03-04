@@ -22,6 +22,7 @@ model, tokenizer = load_model()
 
 # settings:
 instructions = 32
+# TODO tweak layer_idx of where to ablate...
 layer_idx = int(len(model.model.layers) * 0.6)
 pos = -1
 
