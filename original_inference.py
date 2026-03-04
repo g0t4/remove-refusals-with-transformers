@@ -19,7 +19,13 @@ model, tokenizer = load_model()
 
 def generate_response(prompt: str) -> str:
     conversation = [{"role": "user", "content": prompt}]
-    toks = tokenizer.apply_chat_template(conversation=conversation, add_generation_prompt=True, return_tensors="pt")
+    toks = tokenizer.apply_chat_template(
+        conversation=conversation,
+        add_generation_prompt=True,
+        return_tensors="pt",
+        # FOR Qwen3-1.7B you must disable the thinking section else it will refuse!
+        enable_thinking=False,
+    )
     toks = toks.to(model.device)
 
     gen = model.generate(**toks, max_new_tokens=1337)
