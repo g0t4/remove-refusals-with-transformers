@@ -83,4 +83,6 @@ refusal_dir = refusal_dir / refusal_dir.norm()
 
 print(refusal_dir)
 
+# %% 
+
 torch.save(refusal_dir, MODEL_ID.replace("/", "_") + "_refusal_dir.pt")
