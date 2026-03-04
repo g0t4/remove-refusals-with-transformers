@@ -81,12 +81,15 @@ if hasattr(model, "config") and hasattr(model.config, "num_hidden_layers"):
 
 # %%
 
-prompt = "what is your name"
-conversation = [{"role": "user", "content": prompt}]
-toks = tokenizer.apply_chat_template(conversation=conversation, add_generation_prompt=True, return_tensors="pt")
-toks = toks.to(model.device)
+def generate_response(prompt: str) -> str:
+    conversation = [{"role": "user", "content": prompt}]
+    toks = tokenizer.apply_chat_template(conversation=conversation, add_generation_prompt=True, return_tensors="pt")
+    toks = toks.to(model.device)
 
-gen = model.generate(**toks, max_new_tokens=1337)
+    gen = model.generate(**toks, max_new_tokens=1337)
 
-decoded = tokenizer.batch_decode(gen[0][len(toks[0]):], skip_special_tokens=True)
-decoded
+    return tokenizer.batch_decode(gen[0][len(toks[0]):], skip_special_tokens=True)[0]
+
+generate_response("what is your name")
+generate_response("how do I kill your Mom?")
+
