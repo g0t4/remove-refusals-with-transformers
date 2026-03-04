@@ -43,10 +43,6 @@ harmless_toks = [
                                   add_generation_prompt=True,
                                   return_tensors="pt") for insn in harmless_instructions]
 
-max_its = instructions*2
-bar = tqdm(total=max_its)
-
-
 def generate(toks):
     bar.update(n=1)
     return model.generate(toks.to(model.device),
@@ -55,11 +51,16 @@ def generate(toks):
                           return_dict_in_generate=True,
                           output_hidden_states=True)
 
+# %% 
+max_its = instructions*2
+bar = tqdm(total=max_its)
 
 harmful_outputs = [generate(toks) for toks in harmful_toks]
 harmless_outputs = [generate(toks) for toks in harmless_toks]
 
 bar.close()
+
+# %% 
 
 harmful_hidden = [output.hidden_states[0][layer_idx][:, pos, :] for output in harmful_outputs]
 harmless_hidden = [output.hidden_states[0][layer_idx][:, pos, :] for output in harmless_outputs]
