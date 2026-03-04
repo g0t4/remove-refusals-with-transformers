@@ -1,3 +1,14 @@
+# * autoreload changed modules (both `import` and `from` style imports)
+import os
+in_nvim_notebook = os.getenv("NVIM")
+if in_nvim_notebook:
+    get_ipython().extension_manager.load_extension("autoreload")  # pyright: ignore
+    get_ipython().run_line_magic('autoreload', 'complete --print')  # pyright: ignore
+
+import rich
+from rich.traceback import install
+install(show_locals=False)
+
 import einops
 import jaxtyping
 import torch
