@@ -12,11 +12,12 @@ MODEL_ID = "tiiuae/Falcon3-1B-Instruct"
 # MODEL_ID = "google/gemma-1.1-7b-it"
 # MODEL_ID = "meta-llama/Meta-Llama-3-8B-Instruct"
 
+trust_remote_code = True
 model = AutoModelForCausalLM.from_pretrained(MODEL_ID,
-                                             trust_remote_code=True,
+                                             trust_remote_code=trust_remote_code,
                                              dtype=torch.float16,
                                              device_map="cuda",
                                              quantization_config=BitsAndBytesConfig(load_in_4bit=True,
                                                                                     bnb_4bit_compute_dtype=torch.float16))
-tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=True)
+tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=trust_remote_code)
 
