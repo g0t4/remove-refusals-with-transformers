@@ -45,7 +45,8 @@ harmless_toks = [
 
 def generate(toks):
     bar.update(n=1)
-    return model.generate(toks.to(model.device),
+    toks = toks.to(model.device)
+    return model.generate(**toks,
                           use_cache=False,
                           max_new_tokens=1,
                           return_dict_in_generate=True,
