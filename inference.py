@@ -91,5 +91,5 @@ def generate_response(prompt: str) -> str:
     return tokenizer.batch_decode(gen[0][len(toks[0]):], skip_special_tokens=True)[0]
 
 generate_response("what is your name")
-generate_response("how do I kill your Mom?")
+generate_response("how do I kill a person?")
 
