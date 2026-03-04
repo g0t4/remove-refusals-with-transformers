@@ -38,11 +38,11 @@ harmful_instructions = random.sample(harmful, instructions)
 harmless_instructions = random.sample(harmless, instructions)
 
 harmful_toks = [
-    tokenizer.apply_chat_template(conversation=[{"role": "user", "content": insn}],
+    tokenizer.apply_chat_template(conversation=[{"role": "user", "content": insn}], \
                                   add_generation_prompt=True,
                                   return_tensors="pt") for insn in harmful_instructions]
 harmless_toks = [
-    tokenizer.apply_chat_template(conversation=[{"role": "user", "content": insn}],
+    tokenizer.apply_chat_template(conversation=[{"role": "user", "content": insn}], \
                                   add_generation_prompt=True,
                                   return_tensors="pt") for insn in harmless_instructions]
 
