@@ -49,14 +49,16 @@ harmless_toks = [
 def generate(toks):
     bar.update(n=1)
     toks = toks.to(model.device)
-    return model.generate(**toks,
-                          use_cache=False,
-                          max_new_tokens=1,
-                          return_dict_in_generate=True,
-                          output_hidden_states=True)
+    return model.generate(
+        **toks,
+        use_cache=False,
+        max_new_tokens=1,
+        return_dict_in_generate=True,
+        output_hidden_states=True,
+    )
 
 # %%
-max_its = instructions*2
+max_its = instructions * 2
 bar = tqdm(total=max_its)
 
 harmful_outputs = [generate(toks) for toks in harmful_toks]
