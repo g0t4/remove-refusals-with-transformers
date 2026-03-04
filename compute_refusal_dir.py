@@ -1,9 +1,9 @@
 import random
-
 import torch
+from tqdm import tqdm
 from model import model, tokenizer, MODEL_ID
 
-from tqdm import tqdm
+# %% 
 
 
 # settings:

@@ -7,6 +7,8 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, TextStreamer, Bits
 from inspect import signature
 from model import model, tokenizer, MODEL_ID
 
+# %% 
+
 refusal_dir = torch.load(MODEL_ID.replace("/", "_") + "_refusal_dir.pt")
 
 
