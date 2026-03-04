@@ -1,5 +1,6 @@
 # * autoreload changed modules (both `import` and `from` style imports)
 import os
+
 in_nvim_notebook = os.getenv("NVIM")
 if in_nvim_notebook:
     get_ipython().extension_manager.load_extension("autoreload")  # pyright: ignore
@@ -7,6 +8,7 @@ if in_nvim_notebook:
 
 import rich
 from rich.traceback import install
+
 install(show_locals=False)
 
 import random
@@ -16,8 +18,7 @@ from model import load_model, MODEL_ID
 
 model, tokenizer = load_model()
 
-# %% 
-
+# %%
 
 # settings:
 instructions = 32
@@ -54,7 +55,7 @@ def generate(toks):
                           return_dict_in_generate=True,
                           output_hidden_states=True)
 
-# %% 
+# %%
 max_its = instructions*2
 bar = tqdm(total=max_its)
 
@@ -63,7 +64,7 @@ harmless_outputs = [generate(toks) for toks in harmless_toks]
 
 bar.close()
 
-# %% 
+# %%
 
 harmful_hidden = [output.hidden_states[0][layer_idx][:, pos, :] for output in harmful_outputs]
 harmless_hidden = [output.hidden_states[0][layer_idx][:, pos, :] for output in harmless_outputs]
