@@ -20,7 +20,7 @@ def load_model() -> tuple[AutoModelForCausalLM, AutoTokenizer]:
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_ID,
         trust_remote_code=TRUST_REMOTE_CODE,
-        dtype=torch.float16,
+        # dtype=torch.float16,
         device_map="cuda:0",
         # quantization_config=BitsAndBytesConfig(
         #     load_in_4bit=True,
